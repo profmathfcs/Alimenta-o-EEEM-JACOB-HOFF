@@ -1,2 +1,183 @@
 # Alimentação-EEEM-JACOB-HOFF
 Este site é para realizar os pedidos do ano 2026, Complementação
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pedidos 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f8f4;--card:#fff;--ink:#1c2b24;--mut:#66756d;--line:#dde3da;--ac:#2f7a4d;--acx:#fff;--warn:#b3402a;--hl:#e9f2e6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--card:#1a2520;--ink:#e8efe9;--mut:#9aaba1;--line:#2b3932;--ac:#5cbd84;--acx:#0f1a14;--warn:#ef8a74;--hl:#1f3028}}
+:root[data-theme="dark"]{--bg:#121a16;--card:#1a2520;--ink:#e8efe9;--mut:#9aaba1;--line:#2b3932;--ac:#5cbd84;--acx:#0f1a14;--warn:#ef8a74;--hl:#1f3028}
+*{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 Figtree,system-ui,sans-serif;padding-bottom:90px}
+h1{font:700 1.7rem/1.1 'Bricolage Grotesque',Figtree,sans-serif;margin:0}
+header{max-width:760px;margin:0 auto;padding:22px 16px 8px}
+header p{color:var(--mut);margin:6px 0 0}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;max-width:760px;margin:0 auto;padding:10px 16px;border-bottom:1px solid var(--line)}
+input,button,select,textarea{font:inherit;color:inherit}
+#q{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;cursor:pointer;font-size:.88rem}
+.chip[aria-pressed=true]{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+main{max-width:760px;margin:0 auto;padding:6px 16px}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.row.on{background:var(--hl);margin:0 -16px;padding:12px 16px}
+.nm{font-weight:600}
+.meta{color:var(--mut);font-size:.84rem}
+.meta.over{color:var(--warn);font-weight:600}
+.qty{display:flex;align-items:center;gap:4px;grid-row:span 2;grid-column:2}
+.qty button{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--card);font-size:1.2rem;cursor:pointer}
+.qty input{width:64px;height:36px;text-align:center;border:1px solid var(--line);border-radius:9px;background:var(--card)}
+.sub{font-size:.88rem;color:var(--ac);font-weight:600}
+.empty{padding:30px 0;color:var(--mut);text-align:center}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.bar div{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.btn{background:var(--ac);color:var(--acx);border:0;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.tot{font:700 1.25rem 'Bricolage Grotesque',Figtree,sans-serif}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);width:min(680px,94vw);max-height:88vh;padding:0}
+dialog::backdrop{background:#0008}
+.dh{padding:16px 18px 8px}
+.dh h2{margin:0 0 10px;font:700 1.3rem 'Bricolage Grotesque',Figtree,sans-serif}
+.dh input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);margin-top:6px}
+.db{padding:0 18px;overflow:auto;max-height:50vh}
+.db h3{margin:14px 0 4px;font-size:1rem}
+.db table{width:100%;border-collapse:collapse;font-size:.92rem}
+.db td{padding:5px 0;border-bottom:1px dashed var(--line)}
+.db td:last-child{text-align:right;white-space:nowrap}
+.df{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px;justify-content:flex-end}
+@media print{.tools,.bar,.df,header{display:none}dialog{position:static;border:0;max-height:none;width:auto}.db{max-height:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>Pedido de produtos 2026</h1>
+<p>Escolha as quantidades e envie o pedido separado por fornecedor.</p>
+</header>
+<div class="tools">
+<input id="q" type="search" placeholder="Buscar produto" aria-label="Buscar produto">
+<div class="chips" id="chips"></div>
+</div>
+<main id="list"></main>
+<div class="bar"><div>
+<span><span id="cnt">0 itens</span><br><span class="tot" id="tot">R$ 0,00</span></span>
+<button class="btn" id="open" disabled>Ver pedido</button>
+</div></div>
+<dialog id="dlg">
+<div class="dh"><h2>Resumo do pedido</h2>
+<label class="meta" for="who">Solicitante (opcional)</label>
+<input id="who" placeholder="Nome ou setor"></div>
+<div class="db" id="sum"></div>
+<div class="df">
+<button class="btn alt" id="close">Voltar</button>
+<button class="btn alt" id="print">Imprimir</button>
+<button class="btn alt" id="copy">Copiar texto</button>
+<button class="btn" id="wa">Enviar no WhatsApp</button>
+</div>
+</dialog>
+<script>
+const S=["Mercado Rambo LTDA","CT Lorenz Comércio de Alimentos","Diva Maria Bender Lottermann","Cooperativa dos Suinocultores do Caí Superior"];
+const P=`Abacaxi|kg|200|5.69|0
+Abobrinha italiana|kg|100|4.49|0
+Açúcar refinado|kg|60|3.46|1
+Água|L|90|1.16|1
+Aipim|kg|100|6.40|2
+Alface crespa|kg|30|2.49|0
+Alho|kg|90|26|2
+Ameixa|kg|60|10|2
+Amido de milho|kg|60|5.96|1
+Arroz|kg|600|3.36|1
+Banana caturra|kg|300|3.49|0
+Banana prata|kg|120|4.50|2
+Batata doce|kg|200|3|2
+Batata inglesa|kg|400|3.99|0
+Bergamota|kg|100|3.50|2
+Beterraba|kg|240|4.50|2
+Bolacha tipo Maria|kg|40|12.86|1
+Brócolis|kg|100|2.99|0
+Cacau em pó (50%)|kg|30|31.96|1
+Café em pó p/ infusão|kg|20|48.96|1
+Caqui|kg|10|6.50|1
+Carne bovina cubos/bife (coxão/paleta)|un|100|39.99|0
+Carne bovina iscas (coxão/paleta)|kg|100|39.99|0
+Carne bovina moída de 1ª|kg|100|49.99|0
+Carne de frango (sobrecoxa sem osso)|kg|100|16.99|0
+Carne suína cubos (lombo/filé)|kg|30|26.99|3
+Cebola|kg|250|4.50|2
+Cenoura|kg|300|4|2
+Chuchu|kg|15|2.59|0
+Couve|kg|40|2.29|0
+Couve chinesa / Acelga|kg|50|3.98|0
+Couve-flor|kg|100|4.45|0
+Cravo 16 g|un|30|1.44|1
+Extrato de tomate|kg|250|7.95|1
+Farinha de milho|kg|450|3.46|1
+Feijão preto|kg|500|6.96|1
+Laranja|kg|240|2.49|0
+Leite integral|kg|120|4.89|0
+Lentilha|kg|150|4.49|0
+Maçã|kg|500|4.95|2
+Macarrão|kg|500|5.72|1
+Mamão|kg|200|8|2
+Manga|kg|150|6.98|0
+Manteiga|kg|30|52|1
+Margarina|kg|20|12|1
+Milho em lata|kg|70|15|1
+Moranga (abóbora cabotiá)|kg|200|2.95|2
+Óleo de soja|frasco 0,9 L|300|6.99|0
+Ovo de galinha|un|500|6.90|0
+Pão francês|kg|200|15.99|0
+Pepino|kg|35|4|2
+Pera|kg|500|8|2
+Pêssego|kg|100|6.99|0
+Queijo mussarela|kg|20|45.99|0
+Repolho verde|kg|200|2.90|0
+Rúcula|kg|80|2.29|0
+Sagu de mandioca|kg|40|10.96|1
+Sal|kg|350|1.65|1
+Salsa|kg|5|1.89|0
+Sardinha em lata|kg|25|5.69|0
+Suco de uva|L|200|10.99|0
+Tempero verde|kg|20|1.89|0
+Tomate (molho)|kg|400|5|2
+Tomate (salada)|kg|120|5|2
+Vinagre|L|60|1.96|1`.split("\n").map((l,i)=>{const a=l.split("|");return{id:i,n:a[0],u:a[1],max:+a[2],p:+a[3],s:+a[4]}});
+const $=id=>document.getElementById(id),brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}),num=v=>v.toLocaleString("pt-BR");
+const cart={};let sup=-1;
+const norm=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+function chips(){const c=$("chips");c.innerHTML="";[["Todos",-1],...S.map((s,i)=>[s.split(" ").slice(0,2).join(" "),i])].forEach(([t,i])=>{const b=document.createElement("button");b.className="chip";b.textContent=t;b.setAttribute("aria-pressed",sup===i);b.onclick=()=>{sup=i;chips();render()};c.appendChild(b)})}
+function render(){const q=norm($("q").value.trim()),L=$("list");L.innerHTML="";let n=0;
+P.forEach(p=>{if((sup>=0&&p.s!==sup)||(q&&!norm(p.n).includes(q)))return;n++;
+const r=document.createElement("div");r.className="row";r.id="r"+p.id;
+r.innerHTML=`<div><div class="nm">${p.n}</div><div class="meta">${brl(p.p)} por ${p.u} · limite ${num(p.max)} ${p.u}</div><div class="meta">${S[p.s]}</div></div>
+<div class="qty"><button aria-label="Diminuir">−</button><input type="number" inputmode="decimal" min="0" step="any" placeholder="0" aria-label="Quantidade de ${p.n}"><button aria-label="Aumentar">+</button></div>
+<div class="sub"></div>`;
+const inp=r.querySelector("input"),bs=r.querySelectorAll("button");
+if(cart[p.id])inp.value=cart[p.id];
+inp.oninput=()=>set(p,inp.value,r);bs[0].onclick=()=>{inp.value=Math.max(0,(+inp.value||0)-1)||"";set(p,inp.value,r)};bs[1].onclick=()=>{inp.value=(+inp.value||0)+1;set(p,inp.value,r)};
+L.appendChild(r);paint(p,r)});
+if(!n)L.innerHTML='<div class="empty">Nenhum produto encontrado.</div>'}
+function set(p,v,r){v=Math.max(0,+v||0);if(v)cart[p.id]=v;else delete cart[p.id];paint(p,r);total()}
+function paint(p,r){const v=cart[p.id]||0;r.classList.toggle("on",v>0);r.querySelector(".sub").textContent=v?`${num(v)} ${p.u} = ${brl(v*p.p)}`:"";
+const m=r.querySelector(".meta");m.classList.toggle("over",v>p.max)}
+function total(){let t=0,n=0;P.forEach(p=>{if(cart[p.id]){n++;t+=cart[p.id]*p.p}});$("cnt").textContent=n+(n===1?" item":" itens");$("tot").textContent=brl(t);$("open").disabled=!n}
+function text(){const w=$("who").value.trim();let o=`*Pedido de produtos 2026*${w?"\nSolicitante: "+w:""}\n`,g=0;
+S.forEach((s,i)=>{const it=P.filter(p=>p.s===i&&cart[p.id]);if(!it.length)return;let st=0;o+=`\n*${s}*\n`;it.forEach(p=>{const v=cart[p.id]*p.p;st+=v;o+=`- ${p.n}: ${num(cart[p.id])} ${p.u} (${brl(v)})\n`});o+=`Subtotal: ${brl(st)}\n`;g+=st});
+return o+`\n*Total geral: ${brl(g)}*`}
+function summary(){let h="",g=0;S.forEach((s,i)=>{const it=P.filter(p=>p.s===i&&cart[p.id]);if(!it.length)return;let st=0;h+=`<h3>${s}</h3><table>`;it.forEach(p=>{const v=cart[p.id]*p.p;st+=v;h+=`<tr><td>${p.n}</td><td>${num(cart[p.id])} ${p.u}</td><td>${brl(v)}</td></tr>`});h+=`<tr><td colspan="2"><b>Subtotal</b></td><td><b>${brl(st)}</b></td></tr></table>`;g+=st});
+$("sum").innerHTML=h+`<h3 style="text-align:right">Total geral: ${brl(g)}</h3>`}
+$("q").oninput=render;
+$("open").onclick=()=>{summary();$("dlg").showModal()};
+$("close").onclick=()=>$("dlg").close();
+$("print").onclick=()=>{try{window.print()}catch(e){}};
+$("copy").onclick=async()=>{const b=$("copy");try{await navigator.clipboard.writeText(text().replace(/\*/g,""));b.textContent="Copiado"}catch(e){b.textContent="Não foi possível copiar"}setTimeout(()=>b.textContent="Copiar texto",2000)};
+$("wa").onclick=()=>window.open("https://wa.me/?text="+encodeURIComponent(text()),"_blank");
+chips();render();total();
+</script>
+</body>
+</html>
